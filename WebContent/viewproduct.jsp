@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>View Product</title>
 <style>
 #container
 {
@@ -44,7 +45,6 @@
 {
 	width:100%;
 	height:400px;
-	
 }
 #side1
 {
@@ -79,14 +79,15 @@ ul li a
 ul li a:hover
 {
 	border-bottom:3px solid rgb(66,64,255);
-	cursor pointer;
+	cursor: pointer;
 }
 
 table
 {
-	height:250px;
+	height:auto;
 	width:80%;
 	margin-left:10%;
+	margin-top:20px;
 }
 </style>
 </head>
@@ -109,14 +110,29 @@ table
 		<div id = "side2">
 		
 		<%@ page import = "java.sql.*" %>
-<%@ include file="db.jsp" %>
+		<%@ include file="db.jsp" %>
 		<%
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
 		try
 		{
-	Connection con = getConnection();
+			con = (Connection) request.getAttribute("dbConnection");
+			
+			if (con == null || con.isClosed()) {
+				String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
+				String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") : "3306";
+				String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "product_management_system";
+				String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
+				String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "root";
+				
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName, dbUser, dbPass);
+			}
+
 			String sql = "select * from products";
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql);
+			st = con.createStatement();
+			rs = st.executeQuery(sql);
 			out.println("<table border = '1'>");
 			out.println("<tr bgcolor='lime'>");
 			out.println("<td>Product ID</td>");
@@ -152,14 +168,19 @@ table
 		}
 		catch(Exception ae)
 		{
-			out.println(ae);
+			out.println("Error displaying products: " + ae.getMessage());
 		}
-
+		finally
+		{
+			if(rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if(st != null) try { st.close(); } catch(SQLException ex) {}
+			if(con != null) try { con.close(); } catch(SQLException ex) {}
+		}
 		%>
 		
 		<br>
-		<p><center><a href="home.html">Back to Home Page</a></center><p>
-		<p><center><a href="login1.jsp">Log out</a></center><p>
+		<p><center><a href="home.html">Back to Home Page</a></center></p>
+		<p><center><a href="login1.jsp">Log out</a></center></p>
 		</div>
 	</div>
 	<div id = "footer"></div>
