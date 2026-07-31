@@ -4,89 +4,21 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Search Product Result</title>
 <style>
-#container
-{
-	width:100%;
-	height:auto;
-}
-#header
-{
-	width:100%;
-	height:150px;
-	background-color:cyan;
-}
-#logo
-{
-	width:100px;
-	height:100px;
-	border:1px solid blue;
-	margin-top:20px;
-	position:absolute;
-	margin-left:50px;
-	background-image:url("product.jpg");
-	background-size:cover;
-}
-#heading
-{
-	width:100%;
-	height:150px;
-	margin-left:200px;
-}
-#home
-{
-	width:100%;
-	height:50px;
-	background-color:yellow;
-	margin-top:-20px;
-}
-#contain
-{
-	width:100%;
-	height:400px;
-	
-}
-#side1
-{
-	width:10%;
-	height:400px;
-	background-color:rgb(22,255,228);
-	float:left;
-}
-#side2
-{
-	width:90%;
-	height:400px;
-	background-color:white;
-	margin-left:10%;
-}
-#footer
-{
-	width:100%;
-	height:80px;
-	background-color:orange;
-}
-ul li
-{
-	list-style-type:none;
-	padding-top:20px;
-}
-ul li a
-{
-	text-decoration:none;
-	font-size:14px;
-}
-ul li a:hover
-{
-	border-bottom:3px solid rgb(66,64,255);
-	cursor pointer;
-}
-table
-{
-	height:100px;
-	width:80%;
-	margin-left:10%;
-}
+#container { width:100%; height:auto; }
+#header { width:100%; height:150px; background-color:cyan; }
+#logo { width:100px; height:100px; border:1px solid blue; margin-top:20px; position:absolute; margin-left:50px; background-image:url("product.jpg"); background-size:cover; }
+#heading { width:100%; height:150px; margin-left:200px; }
+#home { width:100%; height:50px; background-color:yellow; margin-top:-20px; }
+#contain { width:100%; height:400px; }
+#side1 { width:10%; height:400px; background-color:rgb(22,255,228); float:left; }
+#side2 { width:90%; height:400px; background-color:white; margin-left:10%; }
+#footer { width:100%; height:80px; background-color:orange; }
+ul li { list-style-type:none; padding-top:20px; }
+ul li a { text-decoration:none; font-size:14px; }
+ul li a:hover { border-bottom:3px solid rgb(66,64,255); cursor: pointer; }
+table { height:auto; width:80%; margin-left:10%; margin-top:20px; }
 </style>
 </head>
 <body>
@@ -95,7 +27,7 @@ table
 		<div id = "logo"></div>
 		<div id = "heading"><br><h1>Product Management System</h1></div>
 	</div>
-	<div id = "home"><h1>Search Product</h1></div>
+	<div id = "home"><h1>Search Product Result</h1></div>
 	<div id = "contain">
 		<div id = "side1">
 			<ul>
@@ -108,20 +40,34 @@ table
 		<div id = "side2">
 		
 		<%@ page import = "java.sql.*" %>
-<%@ include file="db.jsp" %>
+		<%@ include file="db.jsp" %>
 		<%
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
 		try
 		{
-			Connection con = getConnection();
-			String a = request.getParameter("txt1");
-			String sql = "select * from products where id = ?";
-			PreparedStatement st = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			st.setString(1, a);
-			ResultSet rs = st.executeQuery();
+			con = (Connection) request.getAttribute("dbConnection");
 			
+			if (con == null || con.isClosed()) {
+				String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
+				String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") : "3306";
+				String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "product_management_system";
+				String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
+				String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "root";
+				
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName, dbUser, dbPass);
+			}
+
+			String pid = request.getParameter("txt1");
+			String sql = "select * from products where pid = ?";
+			st = con.prepareStatement(sql);
+			st.setString(1, pid);
+			rs = st.executeQuery();
+
 			if(rs.next())
 			{
-				rs.beforeFirst(); // Reset to start
 				out.println("<table border = '1'>");
 				out.println("<tr bgcolor='lime'>");
 				out.println("<td>Product ID</td>");
@@ -131,44 +77,40 @@ table
 				out.println("<td>Product Cost Price</td>");
 				out.println("<td>Product Status</td>");
 				out.println("</tr>");
-				while(rs.next())
-				{
-					String a1 = rs.getString(1);
-					String b = rs.getString(2);
-					String c = rs.getString(3);
-					int d = rs.getInt(4);
-					int e = rs.getInt(5);
-					String f = rs.getString(6);
-					
-					out.println("<tr>");
-					out.println("<td>"+a1+"</td>");
-					out.println("<td>"+b+"</td>");
-					out.println("<td>"+c+"</td>");
-					out.println("<td>"+d+"</td>");
-					out.println("<td>"+e+"</td>");
-					out.println("<td>"+f+"</td>");
-					out.println("</tr>");
-				}	
+				
+				out.println("<tr>");
+				out.println("<td>"+rs.getString("pid")+"</td>");
+				out.println("<td>"+rs.getString("pname")+"</td>");
+				out.println("<td>"+rs.getString("catagory")+"</td>");
+				out.println("<td>"+rs.getInt("quantity")+"</td>");
+				out.println("<td>"+rs.getInt("costprice")+"</td>");
+				out.println("<td>"+rs.getString("status")+"</td>");
+				out.println("</tr>");
 				out.println("</table>");
 			}
 			else
 			{
-				out.println("Data not found");
+				out.println("<center><h3>No Product found with ID: " + pid + "</h3></center>");
 			}
 		}
 		catch(Exception ae)
 		{
-			out.println(ae);
+			out.println("Search Error: " + ae.getMessage());
 		}
-
-		%>	
+		finally
+		{
+			if(rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if(st != null) try { st.close(); } catch(SQLException ex) {}
+			if(con != null) try { con.close(); } catch(SQLException ex) {}
+		}
+		%>
+		
 		<br>
-		<p><center><a href="home.html">Back to Home Page</a></center><p>
-		<p><center><a href="login1.jsp">Log out</a></center><p>
+		<p><center><a href="home.html">Back to Home Page</a></center></p>
+		<p><center><a href="login1.jsp">Log out</a></center></p>
 		</div>
 	</div>
 	<div id = "footer"></div>
 </div>
-
 </body>
 </html>
