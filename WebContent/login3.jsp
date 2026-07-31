@@ -68,20 +68,15 @@ function abc()
 	var a = document.f1.txt1.value;
 	var b = document.f1.txt2.value;
 	
-	if(a=="" || b=="")
+	if(a.trim()=="" || b.trim()=="")
 	{
 		alert("Please fill the box!");
 		return false;
 	}
-	else if(b.length<8)
-	{
-		alert("Password must be 8 characters!");
-		return false;
-	}
 	else
-		{
-			return true;
-		}
+	{
+		return true;
+	}
 }
 </script>
 </head>

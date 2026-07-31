@@ -12,19 +12,34 @@
 <%
 try
 {
-	Connection con = getConnection();
-	String a = request.getParameter("txt1");
-	String b = request.getParameter("txt2");
-	String c = request.getParameter("txt3");
-	String d = request.getParameter("txt4");
-	String e = request.getParameter("txt5");
-	int x = Integer.parseInt(c);
+	// Connection object comes from db.jsp
+	Connection con = (Connection) request.getAttribute("dbConnection");
+	
+	if (con == null || con.isClosed()) {
+		// Fallback connection if attribute isn't set
+		String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
+		String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") : "3306";
+		String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "product_management_system";
+		String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
+		String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "root";
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName, dbUser, dbPass);
+	}
+
+	String a = request.getParameter("txt1"); // dname
+	String b = request.getParameter("txt2"); // uname
+	String c = request.getParameter("txt3"); // dcontact
+	String d = request.getParameter("txt4"); // daddress
+	String e = request.getParameter("txt5"); // upassword
+	
+	long x = Long.parseLong(c); // using long for phone numbers to prevent integer overflow
 	
 	String sql = "insert into distributer2 (dname, uname, dcontact, daddress, upassword) values (?, ?, ?, ?, ?)";
 	PreparedStatement st = con.prepareStatement(sql);
 	st.setString(1, a);
 	st.setString(2, b);
-	st.setInt(3, x);
+	st.setLong(3, x);
 	st.setString(4, d);
 	st.setString(5, e);
 	
@@ -33,9 +48,8 @@ try
 }
 catch(Exception ae)
 {
-	out.println(ae);
-}
-
+	out.println("Registration Error: " + ae.getMessage());
+}	
 %>
 </body>
 </html>

@@ -78,7 +78,7 @@ ul li a
 ul li a:hover
 {
 	border-bottom:3px solid rgb(66,64,255);
-	cursor pointer;
+	cursor: pointer;
 }
 </style>
 
@@ -91,15 +91,17 @@ function abc()
 	var d = document.f1.txt4.value;
 	var e = document.f1.txt5.value;
 	
-	if(a=="" || b=="" || c=="" || d=="" || e=="")
+	if(a.trim()=="" || b.trim()=="" || c.trim()=="" || d.trim()=="" || e.trim()=="")
 	{
-		alert("Please fill the box!");
+		alert("Please fill all the boxes!");
 		return false;
 	}
-	else
-		{
-			return true;
-		}
+	if(isNaN(c))
+	{
+		alert("Phone number must contain only numbers!");
+		return false;
+	}
+	return true;
 }
 </script>
 
@@ -121,18 +123,18 @@ function abc()
 		<center>
 		<form name = "f1" action = "add_distributer2.jsp" method = "post">
 		<table>
-		<tr><td>Enter Name</td><td><input type = "text" name = "txt1"></td></tr>
-		<tr><td>Enter Password</td><td><input type = "password" name = "txt2"></td></tr>
-		<tr><td>Enter Phone Number</td><td><input type = "text" name = "txt3"></td></tr>
-		<tr><td>Enter email</td><td><input type = "text" name = "txt4"></td></tr>
-		<tr><td>Enter Address</td><td><input type = "text" name = "txt5"></td></tr>
-		<tr><td><input type = "submit" name = "sub" value = "Add" onclick = "return abc()"></td></tr>
+		<tr><td>Distributor Name</td><td><input type = "text" name = "txt1"></td></tr>
+		<tr><td>Username / Email</td><td><input type = "text" name = "txt2"></td></tr>
+		<tr><td>Phone Number</td><td><input type = "text" name = "txt3"></td></tr>
+		<tr><td>Address</td><td><input type = "text" name = "txt4"></td></tr>
+		<tr><td>Password</td><td><input type = "password" name = "txt5"></td></tr>
+		<tr><td colspan="2" align="center"><input type = "submit" name = "sub" value = "Register" onclick = "return abc()"></td></tr>
 		</table>
 		</form>
 		</center>
 		<br>
-		<p><center><a href="Main.html">Back to Main page</a></center><p>
-		<p><center><a href="login1.jsp">Log in</a></center><p>
+		<p><center><a href="Main.html">Back to Main page</a></center></p>
+		<p><center><a href="login3.jsp">Log in</a></center></p>
 		</div>
 	</div>
 	<div id = "footer"></div>
