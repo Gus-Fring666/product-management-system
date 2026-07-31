@@ -12,20 +12,7 @@
 <%
 try
 {
-	// Connection object comes from db.jsp
-	Connection con = (Connection) request.getAttribute("dbConnection");
-	
-	if (con == null || con.isClosed()) {
-		// Fallback connection if attribute isn't set
-		String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
-		String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") : "3306";
-		String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "product_management_system";
-		String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
-		String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "root";
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName, dbUser, dbPass);
-	}
+	Connection con = getConnection();
 
 	String a = request.getParameter("txt1"); // dname
 	String b = request.getParameter("txt2"); // uname
