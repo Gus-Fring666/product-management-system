@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Add Product</title>
 <style>
 #container
 {
@@ -78,7 +79,7 @@ ul li a
 ul li a:hover
 {
 	border-bottom:3px solid rgb(66,64,255);
-	cursor pointer;
+	cursor: pointer;
 }
 </style>
 
@@ -92,15 +93,22 @@ function abc()
 	var e = document.f1.txt5.value;
 	var f = document.f1.txt6.value;
 	
-	if(a=="" || b=="" || c=="" || d=="" || e=="" || f=="")
+	if(a.trim()=="" || b.trim()=="" || c.trim()=="" || d.trim()=="" || e.trim()=="" || f.trim()=="")
 	{
-		alert("Please fill the box!");
+		alert("Please fill all the boxes!");
 		return false;
 	}
-	else
-		{
-			return true;
-		}
+	if(isNaN(d.trim()))
+	{
+		alert("Quantity must be a valid number!");
+		return false;
+	}
+	if(isNaN(e.trim()))
+	{
+		alert("Cost Price must be a valid number!");
+		return false;
+	}
+	return true;
 }
 </script>
 
@@ -131,13 +139,13 @@ function abc()
 		<tr><td>Enter Quantity</td><td><input type = "text" name = "txt4"></td></tr>
 		<tr><td>Enter Cost Price</td><td><input type = "text" name = "txt5"></td></tr>
 		<tr><td>Enter Status</td><td><input type = "text" name = "txt6"></td></tr>
-		<tr><td><input type = "submit" name = "sub" value = "Add" onclick = "return abc()"></td></tr>
+		<tr><td colspan="2" align="center"><input type = "submit" name = "sub" value = "Add" onclick = "return abc()"></td></tr>
 		</table>
 		</form>
 		</center>
 		<br>
-		<p><center><a href="home.html">Back to Home Page</a></center><p>
-		<p><center><a href="login1.jsp">Log out</a></center><p>
+		<p><center><a href="home.html">Back to Home Page</a></center></p>
+		<p><center><a href="login1.jsp">Log out</a></center></p>
 		</div>
 	</div>
 	<div id = "footer"></div>
